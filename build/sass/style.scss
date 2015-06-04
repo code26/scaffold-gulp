@@ -6,3 +6,11 @@
 body {
 
 }
+
+.page-container {
+  width: 1200px;
+
+  @include breakpoint(xs) {
+    width: auto;
+  }
+}
