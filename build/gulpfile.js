@@ -26,7 +26,6 @@ var onError = function (err) {
 };
 
 function makeHashKey(file) {
-  // Key off the file contents, jshint version and options
   return [file.contents.toString('utf8')].join('');
 }
 
@@ -116,8 +115,10 @@ gulp.task('connect', function () {
 // Build
 gulp.task('build', ['statics', 'styles', 'scripts', 'images']);
 
-gulp.task('deploy', function (callback) {
-  chain('prep', 'cleandist', callback);
+gulp.task('deploy', function () {
+  chain('prep', 'cleandist', function(){
+    console.log('\x1b[32m%s\x1b[0m','Tasks completed. Distribution files at:', appvars.dist);
+  });
 });
 
 gulp.task('watch', ['build', 'connect'], function () {
@@ -174,7 +175,7 @@ gulp.task('default', function () {
 
 //SPECIAL TASKS
 // - not included in the default automation
-// - exprmental features
+// - experimental features
 
 //  UNCSS - removes unecessary CSS files based on the listed HTML files. use with caution
 gulp.task('uncss', function () {
