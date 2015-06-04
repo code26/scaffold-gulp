@@ -174,7 +174,7 @@ gulp.task('watchLive', function () {
 
 // Default task
 gulp.task('default', function () {
-  gulp.start('build');
+  gulp.start('deploy');
 });
 
 

@@ -1,8 +1,15 @@
 # scaffold-gulp #
 
-A simple Gulp build process that I personally use to scaffold a website and automate common CSS/JS tasks so I don't have to. :)
+A simple Gulp build process that I personally use to scaffold a website and automate common CSS/JS tasks so I don't have to. ;)
 
 ** This is an experimental project, so use with caution. **
+
+### Requirements ###
+* [Node.js](https://nodejs.org/)
+* [Ruby](https://www.ruby-lang.org/en/downloads/)
+    * SASS `gem install sass`
+    * Compass `gem install compass`
+* [Gulp.js](http://gulpjs.com/)
 
 ### What's inside? ###
 
@@ -37,11 +44,6 @@ A simple Gulp build process that I personally use to scaffold a website and auto
     * Minify concatenated files `gulp-uglify`
 * Images:
     * Optimization of raw files inside /_img. Processed files are moved to /img `gulp-imagemin`
-
-### Requirements ###
-* [Node.js](https://nodejs.org/)
-* [Ruby](https://www.ruby-lang.org/en/downloads/)
-* [Gulp.js](http://gulpjs.com/)
 
 ### Installation ###
 
