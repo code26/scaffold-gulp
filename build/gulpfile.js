@@ -67,12 +67,6 @@ gulp.task('styles', function () {
       .on('error', function (err) {
         console.error('Error!', err.message);
       })
-    //alternate sass processor
-    /*.pipe($.compass({
-     config_file: 'config.rb',
-     css: 'css',
-     sass: 'sass'
-     }))*/
       .pipe($.autoprefixer(["last 2 versions", "> 1%", "ie 9"], {
         cascade: true
       }))
