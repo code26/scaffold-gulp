@@ -44,9 +44,11 @@ gulp.task('statics', function () {
 // Concatenate & Minify JS
 gulp.task('scripts', function () {
   var jsFiles = ['js/source/_*.js'];
-  return gulp.src($.mainBowerFiles().concat(jsFiles))
+  return gulp.src($.mainBowerFiles({
+      filter:'**/*.js'
+    }).concat(jsFiles))
       .pipe($.plumber(onError))
-      .pipe($.filter('*.js'))
+      //.pipe($.filter('*.js'))
       .pipe($.stripComments({
         block: true
       }))
