@@ -11,5 +11,18 @@
     "bower_components",
     "test",
     "tests"
-  ]
+  ],
+  "dependencies": {
+    "velocity": "~1.2.2",
+    "lodash": "~3.10.0",
+    "bootstrap": "~3.3.5"
+  },
+  "overrides": {
+    "lodash": {
+      "main": "**/*.min.js"
+    },
+    "velocity": {
+      "main": "**/*.min.js"
+    }
+  }
 }
