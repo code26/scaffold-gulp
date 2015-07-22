@@ -48,7 +48,6 @@ gulp.task('scripts', function () {
       filter:'**/*.js'
     }).concat(jsFiles))
       .pipe($.plumber(onError))
-      //.pipe($.filter('*.js'))
       .pipe($.stripComments({
         block: true
       }))
@@ -70,9 +69,10 @@ gulp.task('scripts', function () {
 gulp.task('styles', function () {
   gulp.src('sass/*.scss')
       .pipe($.sass({
-        outputStyle: 'compressed'
-        })
-        .on('error', $.sass.logError))
+        outputStyle: 'compressed',
+        precision: 10,
+        onError: console.error.bind(console, 'Sass error:')
+      }))
       .pipe($.autoprefixer(["last 2 versions", "> 1%", "ie 9"], {
         cascade: true
       }))
