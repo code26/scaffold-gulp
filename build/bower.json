@@ -18,6 +18,9 @@
     "bootstrap": "~3.3.5"
   },
   "overrides": {
+    "jquery": {
+      "ignore": true
+    },
     "lodash": {
       "main": "**/*.min.js"
     },
