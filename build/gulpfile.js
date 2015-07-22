@@ -1,17 +1,23 @@
-var gulp = require('gulp'),
-    glob = require('glob'),
-    chain = require('run-sequence'),
-    del = require('del');
+var gulp = require('gulp');
 
 // Include Plugins
 var $ = require('gulp-load-plugins')({
-  camelize: true
+  camelize: true,
+  pattern: [
+    'gulp-*',
+    'gulp.*',
+    'glob',
+    'del',
+    'run-sequence',
+    'main-bower-files'
+  ],
+  replaceString: /\bgulp[\-.]/
 });
 
 var appvars = {
   includes: ['**/*', '!./node_modules/**'],
-  excludes: ['!./.*/', '!./_*/**', '!.*', '!*.rb', '!./node_modules/**', '!./sass/**', '!./js/source/**', '!package.json', '!gulpfile.js'],
-  xfolders: ['./.*/', './_*', './node_modules', './sass'],
+  excludes: ['!./.*/', '!./_*/**', '!.*', '!*.rb', '!./node_modules/**', '!./sass/**', '!./js/source/**', '!package.json', '!gulpfile.js','!./bower_components/**', '!bower.json'],
+  xfolders: ['./.*/', './_*', './node_modules', './sass','./bower_components'],
   css: 'css',
   js: 'js',
   dist: '../dist',
@@ -37,8 +43,10 @@ gulp.task('statics', function () {
 
 // Concatenate & Minify JS
 gulp.task('scripts', function () {
-  return gulp.src('js/source/_*.js')
+  var jsFiles = ['js/source/_*.js'];
+  return gulp.src($.mainBowerFiles().concat(jsFiles))
       .pipe($.plumber(onError))
+      .pipe($.filter('*.js'))
       .pipe($.stripComments({
         block: true
       }))
@@ -58,14 +66,11 @@ gulp.task('scripts', function () {
 
 // Concatenate & Minify CSS
 gulp.task('styles', function () {
-  return $.rubySass('sass/', {
-    precision: 4,
-    style: 'extended',
-    compass: true
-  })
-      .on('error', function (err) {
-        console.error('Error!', err.message);
-      })
+  gulp.src('sass/*.scss')
+      .pipe($.sass({
+        outputStyle: 'compressed'
+        })
+        .on('error', $.sass.logError))
       .pipe($.autoprefixer(["last 2 versions", "> 1%", "ie 9"], {
         cascade: true
       }))
@@ -116,7 +121,13 @@ gulp.task('connect', function () {
 gulp.task('build', ['statics', 'styles', 'scripts', 'images']);
 
 gulp.task('deploy', function () {
-  chain('prep', 'cleandist', function(){
+  $.runSequence('prep:safe', 'cleandist', function(){
+    console.log('\x1b[32m%s\x1b[0m','Tasks completed. Distribution files at:', appvars.dist);
+  });
+});
+
+gulp.task('deploy:clean', function () {
+  $.runSequence('prep', 'cleandist', function(){
     console.log('\x1b[32m%s\x1b[0m','Tasks completed. Distribution files at:', appvars.dist);
   });
 });
@@ -129,7 +140,7 @@ gulp.task('watch', ['build', 'connect'], function () {
 });
 
 gulp.task('wipe', function () {
-  del(appvars.dist, {force: true}, function (err, paths) {
+  $.del(appvars.dist, {force: true}, function (err, paths) {
     if (paths) {
       console.log('Deleted files/folders:\n', paths.join('\n'))
     }
@@ -137,7 +148,7 @@ gulp.task('wipe', function () {
 });
 
 gulp.task('cleandist', function () {
-  del(appvars.xfolders, {cwd: appvars.dist})
+  $.del(appvars.xfolders, {cwd: appvars.dist})
 });
 
 gulp.task('prep', ['build', 'wipe'], function () {
@@ -145,8 +156,18 @@ gulp.task('prep', ['build', 'wipe'], function () {
       .pipe(gulp.dest(appvars.dist))
 });
 
+gulp.task('prep:safe', ['build'], function () {
+  return gulp.src(appvars.includes.concat(appvars.excludes))
+      .pipe(gulp.dest(appvars.dist))
+});
+
 gulp.task('prep:quick', ['wipe'], function () {
   return gulp.src(appvars.includes.concat(appvars.excludes))
+      .pipe(gulp.dest(appvars.dist))
+});
+
+gulp.task('prep:statics', ['statics'], function () {
+  gulp.src(['*.html', '*.php'])
       .pipe(gulp.dest(appvars.dist))
 });
 
@@ -160,8 +181,8 @@ gulp.task('prep:scripts', ['scripts'], function () {
       .pipe(gulp.dest(appvars.dist + appvars.js))
 });
 
-gulp.task('watchLive', function () {
-  //gulp.watch(['*.html'], ['statics']);
+gulp.task('watch:live', function () {
+  gulp.watch(['*.html', '*.php'], ['prep:statics']);
   gulp.watch('sass/**/*.scss', ['prep:styles']);
   gulp.watch('js/source/*.js', ['prep:scripts']);
   //gulp.watch(['img/**/*', '_img/**/*'], ['images']);
@@ -185,7 +206,7 @@ gulp.task('uncss', function () {
       }))
       .pipe($.rename('style.stripped.css')) //uncss
       .pipe($.uncss({
-        html: glob.sync('*.html')
+        html: $.glob.sync('*.html')
       }))
       .pipe($.size({
         showFiles: true

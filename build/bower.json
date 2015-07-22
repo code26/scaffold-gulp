@@ -1,0 +1,15 @@
+{
+  "name": "scaffold-gulp",
+  "version": "0.1.0",
+  "authors": [
+    "Jordan Panagsagan <jordan.panagsagan@gmail.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
