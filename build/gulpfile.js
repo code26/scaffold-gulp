@@ -80,9 +80,8 @@ gulp.task('styles', function () {
   return gulp.src('sass/*.scss')
       .pipe($.sass({
         outputStyle: 'compressed',
-        includePaths: [app.bower + 'bootstrap-sass/assets/stylesheets/'],
-        onError: console.error.bind(console, 'Sass error:')
-      }))
+        includePaths: [app.bower + 'bootstrap-sass/assets/stylesheets/']
+      }).on('error', $.sass.logError ))
       .pipe($.autoprefixer(["last 2 versions", "> 1%", "ie 9"], {
         cascade: true
       }))
