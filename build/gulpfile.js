@@ -183,13 +183,6 @@ gulp.task('prep:scripts', ['scripts'], function () {
       .pipe(gulp.dest(appvars.dist + appvars.js))
 });
 
-gulp.task('watch:live', function () {
-  gulp.watch(['*.html', '*.php'], ['prep:statics']);
-  gulp.watch('sass/**/*.scss', ['prep:styles']);
-  gulp.watch('js/source/*.js', ['prep:scripts']);
-  //gulp.watch(['img/**/*', '_img/**/*'], ['images']);
-});
-
 // Default task
 gulp.task('default', function () {
   gulp.start('deploy');
