@@ -9,7 +9,8 @@ var $ = require('gulp-load-plugins')({
     'glob',
     'del',
     'run-sequence',
-    'main-bower-files'
+    'main-bower-files',
+    'browser-sync'
   ],
   replaceString: /\bgulp[\-.]/
 });
@@ -27,6 +28,8 @@ var appvars = {
   bower: 'bower_components/'
 };
 
+var reload = $.browserSync.reload;
+
 var onError = function (err) {
   console.log(err);
 };
@@ -36,10 +39,10 @@ function makeHashKey(file) {
 }
 
 function watch() {
-  gulp.watch(['*.html'], ['statics']);
-  gulp.watch('sass/**/*.scss', ['styles']);
-  gulp.watch('js/source/*.js', ['scripts']);
-  gulp.watch(['img/**/*', '_img/**/*'], ['images']);
+  gulp.watch(['*.html'], ['statics',reload]);
+  gulp.watch('sass/**/*.scss', ['styles',reload]);
+  gulp.watch('js/source/*.js', ['scripts',reload]);
+  gulp.watch(['img/**/*', '_img/**/*'], ['images',reload]);
 }
 
 // statics
@@ -141,7 +144,16 @@ gulp.task('deploy:clean', function () {
   });
 });
 
-gulp.task('watch', ['build', 'connect'], function () {
+gulp.task('watch', function () {
+  $.browserSync({
+    notify: false,
+    port: appvars.port,
+  });
+
+  watch();
+});
+
+gulp.task('watch:old', ['build', 'connect'], function () {
   watch();
 });
 
