@@ -153,7 +153,7 @@ gulp.task('watch', function () {
   watch();
 });
 
-gulp.task('watch:old', ['build', 'connect'], function () {
+gulp.task('watch:lr', ['build', 'connect'], function () {
   watch();
 });
 

@@ -14,7 +14,7 @@ A simple Gulp build process that I personally use to scaffold a website and auto
 ### What's inside? ###
 
 * HTML5 standard index page
-* CSS (enabled by default):
+* CSS:
     * Twitter Bootstrap-Sass 3.x (via Bower)
     * Wordpress default styles
     * Mixin for common breakpoints
@@ -27,8 +27,9 @@ A simple Gulp build process that I personally use to scaffold a website and auto
 
 ### The process ###
 
-* LiveReload
-    * HTML, CSS, JS, Images
+* BrowserSync (gulp watch) and LiveReload (gulp watch:lr) options
+    * HTML, CSS, JS, Images reloading
+    * LR will be removed on next version.
 * CSS:
     * SASS processing `gulp-sass`
     * Autoprefixer (last 2 versions, > 1% usage, >=IE9) `gulp-autoprefixer`
@@ -48,21 +49,18 @@ A simple Gulp build process that I personally use to scaffold a website and auto
 
 1. Clone or Download zip
 2. go to `build` folder
-3. Run `npm install`
-4. Run `bower install`
-5. Run `gulp watch`
+3. Run `npm install && bower install`
+4. Run `gulp watch`
 
 ### Commands ###
-`gulp build` - Runs all tasks mentioned above
+`gulp build` - Runs all tasks
 
-`gulp watch` - Runs all tasks, with LiveReload
+`gulp watch` - Runs all tasks, with BrowserSync
 
-`gulp deploy` - Creates a distribution folder which removes build-related files (/dist)
+`gulp deploy` - Creates a distribution folder which removes build-related files. Saves to `./dist` folder
 
 ### TODO ###
-* Switch to BrowserSync
 * Upgrade to jQuery 2.x.x
-* Possible switch to PostCSS
 
 ### ACK ###
 [Yeoman](http://yeoman.io/)
