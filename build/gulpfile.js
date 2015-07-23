@@ -15,7 +15,7 @@ var $ = require('gulp-load-plugins')({
   replaceString: /\bgulp[\-.]/
 });
 
-var appvars = {
+var app = {
   includes: ['**/*', '!./node_modules/**'],
   excludes: ['!./.*/', '!./_*/**', '!.*', '!*.rb', '!./node_modules/**', '!./sass/**', '!./js/source/**', '!package.json', '!gulpfile.js','!./bower_components/**', '!bower.json'],
   xfolders: ['./.*/', './_*', './node_modules', './sass','./bower_components'],
@@ -80,7 +80,7 @@ gulp.task('styles', function () {
   return gulp.src('sass/*.scss')
       .pipe($.sass({
         outputStyle: 'compressed',
-        includePaths: [appvars.bower + 'bootstrap-sass/assets/stylesheets/'],
+        includePaths: [app.bower + 'bootstrap-sass/assets/stylesheets/'],
         onError: console.error.bind(console, 'Sass error:')
       }))
       .pipe($.autoprefixer(["last 2 versions", "> 1%", "ie 9"], {
@@ -110,7 +110,7 @@ gulp.task('images', function () { //process files in /_img folder and move to /i
         interlaced: true,
         svgoPlugins: [{removeEmptyAttrs: true}, {removeMetadata: true}],
       }), {
-        fileCache: new $.cache.Cache({cacheDirName: appvars.cache}),
+        fileCache: new $.cache.Cache({cacheDirName: app.cache}),
         key: makeHashKey,
       }))
       .pipe(gulp.dest('img'))
@@ -121,12 +121,12 @@ gulp.task('connect', function () {
 
   $.connect.server({
     root: require('path').resolve(''),
-    host: appvars.host,
-    port: appvars.port,
+    host: app.host,
+    port: app.port,
     livereload: true
   });
 
-  require('opn')('http://' + appvars.host + ':' + appvars.port);
+  require('opn')('http://' + app.host + ':' + app.port);
 });
 
 // Build
@@ -134,20 +134,20 @@ gulp.task('build', ['statics', 'styles', 'scripts', 'images']);
 
 gulp.task('deploy', function () {
   $.runSequence('prep:safe', 'cleandist', function(){
-    console.log('\x1b[32m%s\x1b[0m','Tasks completed. Distribution files at:', appvars.dist);
+    console.log('\x1b[32m%s\x1b[0m','Tasks completed. Distribution files at:', app.dist);
   });
 });
 
 gulp.task('deploy:clean', function () {
   $.runSequence('prep', 'cleandist', function(){
-    console.log('\x1b[32m%s\x1b[0m','Tasks completed. Distribution files at:', appvars.dist);
+    console.log('\x1b[32m%s\x1b[0m','Tasks completed. Distribution files at:', app.dist);
   });
 });
 
 gulp.task('watch', function () {
   $.browserSync({
     notify: false,
-    port: appvars.port,
+    port: app.port,
   });
 
   watch();
@@ -158,7 +158,7 @@ gulp.task('watch:lr', ['build', 'connect'], function () {
 });
 
 gulp.task('wipe', function () {
-  $.del(appvars.dist, {force: true}, function (err, paths) {
+  $.del(app.dist, {force: true}, function (err, paths) {
     if (paths) {
       console.log('Deleted files/folders:\n', paths.join('\n'))
     }
@@ -166,37 +166,37 @@ gulp.task('wipe', function () {
 });
 
 gulp.task('cleandist', function () {
-  $.del(appvars.xfolders, {cwd: appvars.dist})
+  $.del(app.xfolders, {cwd: app.dist})
 });
 
 gulp.task('prep', ['build', 'wipe'], function () {
-  return gulp.src(appvars.includes.concat(appvars.excludes))
-      .pipe(gulp.dest(appvars.dist))
+  return gulp.src(app.includes.concat(app.excludes))
+      .pipe(gulp.dest(app.dist))
 });
 
 gulp.task('prep:safe', ['build'], function () {
-  return gulp.src(appvars.includes.concat(appvars.excludes))
-      .pipe(gulp.dest(appvars.dist))
+  return gulp.src(app.includes.concat(app.excludes))
+      .pipe(gulp.dest(app.dist))
 });
 
 gulp.task('prep:quick', ['wipe'], function () {
-  return gulp.src(appvars.includes.concat(appvars.excludes))
-      .pipe(gulp.dest(appvars.dist))
+  return gulp.src(app.includes.concat(app.excludes))
+      .pipe(gulp.dest(app.dist))
 });
 
 gulp.task('prep:statics', ['statics'], function () {
   gulp.src(['*.html', '*.php'])
-      .pipe(gulp.dest(appvars.dist))
+      .pipe(gulp.dest(app.dist))
 });
 
 gulp.task('prep:styles', ['styles'], function () {
-  gulp.src(appvars.css + '/**')
-      .pipe(gulp.dest(appvars.dist + appvars.css))
+  gulp.src(app.css + '/**')
+      .pipe(gulp.dest(app.dist + app.css))
 });
 
 gulp.task('prep:scripts', ['scripts'], function () {
-  gulp.src([appvars.js + '/**', '!' + appvars.js + '/source/**'])
-      .pipe(gulp.dest(appvars.dist + appvars.js))
+  gulp.src([app.js + '/**', '!' + app.js + '/source/**'])
+      .pipe(gulp.dest(app.dist + app.js))
 });
 
 // Default task
