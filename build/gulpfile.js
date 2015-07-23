@@ -67,10 +67,10 @@ gulp.task('scripts', function () {
 
 // Concatenate & Minify CSS
 gulp.task('styles', function () {
-  gulp.src('sass/*.scss')
+  return gulp.src('sass/*.scss')
       .pipe($.sass({
         outputStyle: 'compressed',
-        precision: 10,
+        includePaths: [appvars.bower + 'bootstrap-sass/assets/stylesheets/'],
         onError: console.error.bind(console, 'Sass error:')
       }))
       .pipe($.autoprefixer(["last 2 versions", "> 1%", "ie 9"], {

@@ -15,7 +15,7 @@ A simple Gulp build process that I personally use to scaffold a website and auto
 
 * HTML5 standard index page
 * CSS (enabled by default):
-    * Twitter Bootstrap-Sass (3.x)
+    * Twitter Bootstrap-Sass 3.x (via Bower)
     * Wordpress default styles
     * Mixin for common breakpoints
 * JS:
