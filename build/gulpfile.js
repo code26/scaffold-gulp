@@ -148,6 +148,7 @@ gulp.task('watch', function () {
   $.browserSync({
     notify: false,
     port: app.port,
+    server: {}
   });
 
   watch();
