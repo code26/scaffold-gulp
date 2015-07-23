@@ -61,6 +61,7 @@ A simple Gulp build process that I personally use to scaffold a website and auto
 
 ### TODO ###
 * Upgrade to jQuery 2.x.x
+* To add optional gulp-rev feature
 
 ### ACK ###
 [Yeoman](http://yeoman.io/)
