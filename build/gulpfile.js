@@ -35,6 +35,13 @@ function makeHashKey(file) {
   return [file.contents.toString('utf8')].join('');
 }
 
+function watch() {
+  gulp.watch(['*.html'], ['statics']);
+  gulp.watch('sass/**/*.scss', ['styles']);
+  gulp.watch('js/source/*.js', ['scripts']);
+  gulp.watch(['img/**/*', '_img/**/*'], ['images']);
+}
+
 // statics
 gulp.task('statics', function () {
   return gulp.src(['*.html', '*.php'])
@@ -135,10 +142,7 @@ gulp.task('deploy:clean', function () {
 });
 
 gulp.task('watch', ['build', 'connect'], function () {
-  gulp.watch(['*.html'], ['statics']);
-  gulp.watch('sass/**/*.scss', ['styles']);
-  gulp.watch('js/source/*.js', ['scripts']);
-  gulp.watch(['img/**/*', '_img/**/*'], ['images']);
+  watch();
 });
 
 gulp.task('wipe', function () {
