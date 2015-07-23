@@ -18,7 +18,6 @@ A simple Gulp build process that I personally use to scaffold a website and auto
     * Twitter Bootstrap-Sass (3.x)
     * Wordpress default styles
     * Mixin for common breakpoints
-    * Compass
 * JS:
     * jQuery 1.1x
     * Modernizr (custom build, see banner on file)
