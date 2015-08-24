@@ -150,30 +150,34 @@ gulp.task('styles', function() {
         .pipe(gulp.dest('css'));
 });
 
-gulp.task('images', function() { //process files in /_raw_img folder and move to /img
-    return $.cache.clearAll(function() {
-        return gulp.src('_raw_img/**/*')
-            .pipe($.cache($.imagemin({
-                optimizationLevel: 3,
-                progressive: true,
-                interlaced: true,
-                svgoPlugins: [{
-                    removeEmptyAttrs: true
-                }, {
-                    removeMetadata: true
-                }, {
-                    removeUselessStrokeAndFill: true
-                }],
-                use: [$.imageminMozjpeg({
-                    quality: 85,
-                    //smooth: 10
-                })]
-            }), {
-                key: makeHashKey,
-            }))
-            .pipe(gulp.dest('img'));
-    });
+gulp.task('images', function(callback) { //process files in /_raw_img folder and move to /img
+    return $.runSequence('cache:clear','images:optimize',callback);
 });
+
+gulp.task('images:optimize', function() { //process files in /_raw_img folder and move to /img
+    return gulp.src('_raw_img/**/*')
+        .pipe($.changed(app.img))
+        .pipe($.cache($.imagemin({
+            optimizationLevel: 3,
+            progressive: true,
+            interlaced: true,
+            svgoPlugins: [{
+                removeEmptyAttrs: true
+            }, {
+                removeMetadata: true
+            }, {
+                removeUselessStrokeAndFill: true
+            }],
+            use: [$.imageminMozjpeg({
+                quality: 85,
+                //smooth: 10
+            })]
+        }), {
+            key: makeHashKey,
+        }))
+        .pipe(gulp.dest('img'));
+});
+
 
 gulp.task('cache:clear', function(done) {
     return $.cache.clearAll(done);
@@ -192,45 +196,45 @@ gulp.task('connect', function() {
 });
 
 // Build
-gulp.task('build', function() {
-    $.runSequence(['statics', 'styles', 'scripts'], 'images');
+gulp.task('build', function(callback) {
+    return $.runSequence(['statics', 'styles', 'scripts'], 'images',callback);
 });
 
 // Deploy files for production
 gulp.task('deploy', function() {
-    $.runSequence('prep:safe', 'cleandist', function() {
+    return $.runSequence('prep:safe', 'cleandist', function() {
         console.log('\x1b[32m%s\x1b[0m', 'Tasks completed. Distribution files at:', app.dist);
     });
 });
 
 // Deploy files for production, !! deleting dist/ folder first !!
 gulp.task('deploy:clean', function() {
-    $.runSequence('prep', 'cleandist', function() {
+    return $.runSequence('prep', 'cleandist', function() {
         console.log('\x1b[32m%s\x1b[0m', 'Tasks completed. Distribution files at:', app.dist);
     });
 });
 
 // Build and deploy statics
 gulp.task('deploy:statics', ['statics'], function() {
-    gulp.src(['*.html', '*.php'])
+    return gulp.src(['*.html', '*.php'])
         .pipe(gulp.dest(app.dist));
 });
 
 // Build and deploy styles
 gulp.task('deploy:styles', ['styles'], function() {
-    gulp.src(app.css + '/**')
+    return gulp.src(app.css + '/**')
         .pipe(gulp.dest(app.dist + app.css));
 });
 
 // Build and deploy scripts
 gulp.task('deploy:scripts', ['scripts'], function() {
-    gulp.src([app.js + '/**', '!' + app.js + '/source/**'])
+    return gulp.src([app.js + '/**', '!' + app.js + '/source/**'])
         .pipe(gulp.dest(app.dist + app.js));
 });
 
 // Build and deploy images
 gulp.task('deploy:images', ['images'], function() {
-    gulp.src(app.img + '/**')
+    return gulp.src(app.img + '/**')
         .pipe(gulp.dest(app.dist + app.img));
 });
 
