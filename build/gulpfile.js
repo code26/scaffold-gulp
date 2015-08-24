@@ -150,7 +150,8 @@ gulp.task('styles', function () {
 });
 
 gulp.task('images', function () { //process files in /_raw_img folder and move to /img
-  return gulp.src('_raw_img/**/*')
+  return $.cache.clearAll(function(){
+    return gulp.src('_raw_img/**/*')
       .pipe($.cache($.imagemin({
         optimizationLevel: 3,
         progressive: true,
@@ -164,6 +165,7 @@ gulp.task('images', function () { //process files in /_raw_img folder and move t
         key: makeHashKey,
       }))
       .pipe(gulp.dest('img'));
+  });
 });
 
 gulp.task('cache:clear', function (done) {
@@ -184,7 +186,7 @@ gulp.task('connect', function () {
 
 // Build
 gulp.task('build', function(){
-  $.runSequence('cache:clear','images',['styles', 'scripts'],'statics');
+  $.runSequence(['statics','styles', 'scripts'],'images');
 });
 
 // Deploy files for production
@@ -220,7 +222,7 @@ gulp.task('deploy:scripts', ['scripts'], function () {
 });
 
 // Build and deploy images
-gulp.task('deploy:images', ['cache:clear','images'], function () {
+gulp.task('deploy:images', ['images'], function () {
   gulp.src(app.img + '/**')
       .pipe(gulp.dest(app.dist + app.img));
 });
