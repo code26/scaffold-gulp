@@ -42,16 +42,17 @@ function makeHashKey(file) {
 }
 
 function watch() {
-    gulp.watch(['*.html'], ['statics', reload]);
-    gulp.watch('sass/**/*.scss', ['styles', reload]);
+    gulp.watch(['*.html'], ['statics']);
+    gulp.watch('sass/**/*.scss', ['styles']);
     gulp.watch('js/source/head/*.js', ['scripts:head', reload]);
     gulp.watch('js/source/*.js', ['scripts:foot', reload]);
-    gulp.watch(['_raw_img/**/*'], ['images', reload]);
+    gulp.watch(['_raw_img/**/*'], ['images']);
 }
 
 // statics
 gulp.task('statics', function() {
-    return gulp.src(['*.html', '*.php']);
+    return gulp.src(['*.html', '*.php'])
+      .pipe(reload({stream: true}));
 });
 
 // Run all scripts tasks
@@ -147,7 +148,8 @@ gulp.task('styles', function() {
         .pipe($.size({
             showFiles: true
         }))
-        .pipe(gulp.dest('css'));
+        .pipe(gulp.dest('css'))
+        .pipe(reload({stream: true}));
 });
 
 gulp.task('images', function(callback) { //process files in /_raw_img folder and move to /img
@@ -175,24 +177,13 @@ gulp.task('images:optimize', function() { //process files in /_raw_img folder an
         }), {
             key: makeHashKey,
         }))
-        .pipe(gulp.dest('img'));
+        .pipe(gulp.dest('img'))
+        .pipe(reload({stream: true}));
 });
 
 
 gulp.task('cache:clear', function(done) {
     return $.cache.clearAll(done);
-});
-
-gulp.task('connect', function() {
-
-    $.connect.server({
-        root: require('path').resolve(''),
-        host: app.host,
-        port: app.port,
-        livereload: true
-    });
-
-    require('opn')('http://' + app.host + ':' + app.port);
 });
 
 // Build
