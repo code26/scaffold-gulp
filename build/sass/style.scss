@@ -7,8 +7,8 @@ body {
 }
 
 .page-container {
-  width: 800px;
-  margin: 10% auto;
+  width: 560px;
+  margin: 20% auto;
 
   @include breakpoint(xs) {
     width: auto;
