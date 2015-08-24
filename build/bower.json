@@ -13,18 +13,19 @@
     "tests"
   ],
   "dependencies": {
-    "velocity": "~1.2.2",
-    "lodash": "~3.10.0",
-    "bootstrap-sass": "~3.3.5"
+    "bootstrap-sass": "~3.3.5",
+    "jquery": "2",
+    "velocity": "~1.2.2"
   },
   "overrides": {
-    "jquery": {
+    "bootstrap-sass": {
       "ignore": true
     },
-    "lodash": {
-      "main": "**/*.min.js"
+    "jquery": {
+      //"ignore": true
     },
     "velocity": {
+      "ignore": true,
       "main": "**/*.min.js"
     }
   }

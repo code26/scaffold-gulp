@@ -6,5 +6,5 @@ $(document).ready(function () {
   $(window).on('resize', _.debounce(function () {
     console.log('resized!');
   }, 300));
-
+  console.log('testing');
 });
