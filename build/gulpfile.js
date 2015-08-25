@@ -63,7 +63,7 @@ gulp.task('scripts', ['scripts:jquery', 'scripts:head', 'scripts:foot'], functio
 // jQuery Bower
 gulp.task('scripts:jquery', function() {
     return gulp.src($.mainBowerFiles({
-            filter: ['**/*jquery*']
+            filter: ['**/'+app.bower+'jquery/**/*']
         }))
         .pipe($.plumber(onError))
         .pipe($.changed(app.js + '/lib'))
@@ -107,7 +107,7 @@ gulp.task('scripts:head', function() {
 gulp.task('scripts:foot', function() {
     var jsFiles = ['js/source/_*.js', '!js/source/head/*'];
     return gulp.src($.mainBowerFiles({
-            filter: ['**/*.js', '!**/*jquery*']
+            filter: ['**/*.js', '!**/'+app.bower+'jquery/**/*']
         }).concat(jsFiles))
         .pipe($.plumber(onError))
         .pipe($.stripComments({
@@ -194,14 +194,14 @@ gulp.task('build', function(callback) {
 // Deploy files for production
 gulp.task('deploy', function() {
     return $.runSequence('prep:safe', 'cleandist', function() {
-        console.log('\x1b[32m%s\x1b[0m', 'Tasks completed. Distribution files at:', app.dist);
+        console.log('\x1b[32m%s\x1b[0m', '✔ Tasks completed. Distribution files at:', app.dist);
     });
 });
 
 // Deploy files for production, !! deleting dist/ folder first !!
 gulp.task('deploy:clean', function() {
     return $.runSequence('prep', 'cleandist', function() {
-        console.log('\x1b[32m%s\x1b[0m', 'Tasks completed. Distribution files at:', app.dist);
+        console.log('\x1b[32m%s\x1b[0m', '✔ Tasks completed. Distribution files at:', app.dist);
     });
 });
 

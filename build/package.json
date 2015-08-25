@@ -2,7 +2,7 @@
   "name": "scaffold_gulp",
   "description": "A basic website scaffold using Gulp to automate tasks",
   "homepage": "http://jpanagsagan.com",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "author": "Jordan S. Panagsagan <jordan.panagsagan@gmail.com>",
   "contributors": {},
   "dependencies": {},
