@@ -20,21 +20,20 @@ A simple Gulp build process that I personally use to scaffold a website and auto
     * Mixin for common breakpoints
 * JS:
     * jQuery 2.x
-    * Modernizr (custom build, see banner on file)
+    * Modernizr3 (custom build, see banner on file)
     * Lodash (custom build, `modern, category=collection,function`)
     * TWBS scripts (via Bower)
     * VelocityJS (via Bower, disabled by default. To enable, open bower.json > comment "ignore":true)
 
 ### The process ###
 
-* BrowserSync (gulp watch, gulp watch:build) ~~and LiveReload (gulp watch:lr) options~~
+* BrowserSync (gulp watch, gulp watch:build)
     * HTML, CSS, JS, Images reloading
-    * ~~LR will be removed on next version.~~ REMOVED
 * CSS:
     * SASS processing `gulp-sass`
     * Autoprefixer (last 2 versions, > 1% usage, >=IE9) `gulp-autoprefixer`
         * takes care of vendor prefixes
-    * Combine Media Queries `gulp-combine-media-queries`
+    * Combine Media Queries ~~`gulp-combine-media-queries`~~ `gulp-group-css-media-queries` (replaced on v1.1)
         * media queries can be nested inside the actual selector for maintainability. takes care of consolidating and placing mediaqueries at the end of processed CSS file
     * Minification `gulp-csso`
     * NEW: TWBS is installed via Bower and a router file is created for it. This makes updating TWBS easier and prevents overriding of user configurations.
@@ -43,13 +42,13 @@ A simple Gulp build process that I personally use to scaffold a website and auto
     * Strip block comments `gulp-strip-comments`
     * Concatenate *.js files inside /js/source, (except files inside /js/lib and /js/source/head)
     * Minify concatenated files `gulp-uglify`
-    * NEW: Concatenates and Minify Init scripts (scripts under /js/source/head), and creates a separate file (init.js and init.min.js)
-    * NEW: jQuery is installed via Bower and has a separate task. Outputs to standard and minified files to /js/lib
+    * Concatenates and Minify Init scripts (scripts under /js/source/head), and creates a separate file (init.js and init.min.js)
+    * jQuery is installed via Bower and has a separate task. Outputs to standard and minified files to /js/lib
 * Images:
     * Optimization of raw files inside /_raw_img. Processed files are moved to /img `gulp-imagemin`
-    * NEW: All images must be put under `_raw_img/` to prevent unnecessary looping of image task.
-    * NEW: Added MozJpeg addon for finer compression control.
-    * NEW: Updated method for clearing cache.
+    * All images must be put under `_raw_img/` to prevent unnecessary looping of image task.
+    * Added MozJpeg addon for finer compression control.
+    * Updated method for clearing cache.
 
 ### Installation ###
 
@@ -71,8 +70,8 @@ A simple Gulp build process that I personally use to scaffold a website and auto
 Other micro tasks are found in Gulpfile.js
 
 ### TODO ###
-* ~~Upgrade to jQuery 2.x.x~~ DONE
 * To add optional gulp-rev feature
+* To use wiredep for bower dependencies
 
 ### ACK ###
 [Yeoman](http://yeoman.io/)
