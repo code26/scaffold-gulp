@@ -133,10 +133,11 @@ gulp.task('styles', function() {
             outputStyle: 'compressed',
             includePaths: [app.bower + 'bootstrap-sass/assets/stylesheets/']
         }).on('error', $.sass.logError))
-        .pipe($.autoprefixer(["last 2 versions", "ie >= 9", "> 1%"], {
+        .pipe($.autoprefixer({
+            browsers: ["last 2 versions", "ie >= 9", "> 1%"],
             cascade: true
         }))
-        .pipe($.combineMediaQueries({
+        .pipe($.groupCssMediaQueries({
             //log: true
         }))
         .pipe($.size({
