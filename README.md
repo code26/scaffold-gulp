@@ -9,7 +9,9 @@ A simple Gulp build process that I personally use to scaffold a website and auto
 * [Ruby](https://www.ruby-lang.org/en/downloads/)
     * SASS `gem install sass`
 * [Gulp.js](http://gulpjs.com/)
+    `npm install gulp -g`
 * [Bower](http://bower.io/)
+    `npm install bower -g`
 
 ### What's inside? ###
 
@@ -54,24 +56,25 @@ A simple Gulp build process that I personally use to scaffold a website and auto
 
 1. Clone or Download zip
 2. go to `build` folder
-3. Run `npm install && bower install`
-4. Run `gulp watch:build`
+3. Run `npm install && bower install --allow-root`
+4. Run `gulp watch`
 
 ### Commands ###
 
 `gulp build` - Runs all tasks
 
-`gulp watch` - Runs BrowserSync
+`gulp watch:fast` - Runs BrowserSync
 
-`gulp watch:build` - Runs all tasks, with BrowserSync
+`gulp watch` - Runs "build" task before running BrowserSync
+
+`gulp watch:offline` - same as "watch" but BrowserSync runs offline
 
 `gulp deploy` - Creates a distribution folder which removes build-related files. Saves to `./dist` folder
 
 Other micro tasks are found in Gulpfile.js
 
 ### TODO ###
-* To add optional gulp-rev feature
-* To use wiredep for bower dependencies
+* update stale packages
 
 ### ACK ###
 [Yeoman](http://yeoman.io/)
