@@ -1,3 +1,26 @@
+var app = {
+    css: 'css',
+    js: 'js',
+    img: 'img',
+    dist: '../dist/',
+    snapshots: 'snapshots/',
+    includes: ['**/*', '!./node_modules/**'],
+    excludes: ['!./.*/', '!./_*/**', '!.*', '!*.rb', '!./node_modules/**', '!./sass/**', '!./js/source/**', '!package.json', '!gulpfile.js', '!./bower_components/**', '!bower.json'],
+    xfolders: ['./.*/', './_*', './node_modules', './sass', './bower_components'],
+    port: 41710,
+    host: 'localhost',
+    bower: 'bower_components/'
+};
+
+var filename = {
+    headjs : 'init.js',
+    headjsmin: 'init.min.js',
+    js: 'scripts.js',
+    jsmin: 'scripts.min.js',
+    css: 'style.css',
+    cssmin: 'style.min.css',
+}
+
 var gulp = require('gulp');
 
 // Include Plugins
@@ -17,20 +40,6 @@ var $ = require('gulp-load-plugins')({
     replaceString: /\bgulp[\-.]/
 });
 
-var app = {
-    includes: ['**/*', '!./node_modules/**'],
-    excludes: ['!./.*/', '!./_*/**', '!.*', '!*.rb', '!./node_modules/**', '!./sass/**', '!./js/source/**', '!package.json', '!gulpfile.js', '!./bower_components/**', '!bower.json'],
-    xfolders: ['./.*/', './_*', './node_modules', './sass', './bower_components'],
-    css: 'css',
-    js: 'js',
-    img: 'img',
-    dist: '../dist/',
-    snapshots: 'snapshots/',
-    port: 41710,
-    host: 'localhost',
-    bower: 'bower_components/'
-};
-
 var reload = $.browserSync.reload;
 
 var onError = function(err) {
@@ -46,7 +55,7 @@ function watch() {
     gulp.watch('sass/**/*.scss', ['styles']);
     gulp.watch('js/source/head/*.js', ['scripts:head', reload]);
     gulp.watch('js/source/*.js', ['scripts:foot', reload]);
-    gulp.watch(['_raw_img/**/*'], ['images']);
+    gulp.watch(['_raw_img/**/*.jpg','_raw_img/**/*.svg','_raw_img/**/*.png','_raw_img/**/*.gif'], ['images']);
 }
 
 // statics
@@ -90,12 +99,12 @@ gulp.task('scripts:head', function() {
         .pipe($.stripComments({
             block: true
         }))
-        .pipe($.concat('init.js'))
+        .pipe($.concat(filename.headjs))
         .pipe(gulp.dest(app.js))
         .pipe($.size({
             showFiles: true
         }))
-        .pipe($.rename('init.min.js'))
+        .pipe($.rename(filename.headjsmin))
         .pipe($.uglify())
         .pipe($.size({
             showFiles: true
@@ -113,12 +122,12 @@ gulp.task('scripts:foot', function() {
         .pipe($.stripComments({
             block: true
         }))
-        .pipe($.concat('scripts.js'))
+        .pipe($.concat(filename.js))
         .pipe(gulp.dest(app.js))
         .pipe($.size({
             showFiles: true
         }))
-        .pipe($.rename('scripts.min.js'))
+        .pipe($.rename(filename.jsmin))
         .pipe($.uglify())
         .pipe($.size({
             showFiles: true
@@ -134,7 +143,7 @@ gulp.task('styles', function() {
             includePaths: [app.bower + 'bootstrap-sass/assets/stylesheets/']
         }).on('error', $.sass.logError))
         .pipe($.autoprefixer({
-            browsers: ["last 2 versions", "ie >= 9", "> 1%"],
+            browsers: ["last 2 versions", "ie >= 10", "> 1%"],
             cascade: true
         }))
         .pipe($.groupCssMediaQueries({
@@ -143,8 +152,9 @@ gulp.task('styles', function() {
         .pipe($.size({
             showFiles: true
         }))
+        .pipe($.concat(filename.css))
         .pipe(gulp.dest('css'))
-        .pipe($.rename('style.min.css')) // create minified version
+        .pipe($.rename(filename.cssmin)) // create minified version
         .pipe($.csso())
         .pipe($.size({
             showFiles: true
@@ -158,7 +168,7 @@ gulp.task('images', function(callback) { //process files in /_raw_img folder and
 });
 
 gulp.task('images:optimize', function() { //process files in /_raw_img folder and move to /img
-    return gulp.src('_raw_img/**/*')
+    return gulp.src(['_raw_img/**/*.jpg','_raw_img/**/*.svg','_raw_img/**/*.png','_raw_img/**/*.gif'])
         .pipe($.changed(app.img))
         .pipe($.cache($.imagemin({
             optimizationLevel: 3,
@@ -231,22 +241,41 @@ gulp.task('deploy:images', ['images'], function() {
 });
 
 // build and watch with Browsersync
-gulp.task('watch:build', ['build'], function() {
+gulp.task('watch', ['build'], function() {
     $.browserSync({
-        notify: false,
+        notify: true,
         port: app.port,
-        server: {}
+        server: true,
+        tunnel: false,
+        xip: false,
+        //online: false,
+    });
+
+    watch();
+});
+
+gulp.task('watch:offline', ['build'], function() {
+    $.browserSync({
+        notify: true,
+        port: app.port,
+        server: true,
+        tunnel: false,
+        xip: false,
+        online: false,
     });
 
     watch();
 });
 
 // watch with Browsersync (no building on init)
-gulp.task('watch', function() {
+gulp.task('watch:fast', function() {
     $.browserSync({
         notify: false,
         port: app.port,
-        server: {}
+        server: true,
+        tunnel: false,
+        xip: false,
+        online: false,
     });
 
     watch();
