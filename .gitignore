@@ -5,6 +5,12 @@ node_modules
 *.log
 bower_components
 .idea
-/build/css
-/build/js/*.js
 ___source___
+wp-admin
+wp-includes
+/*.*
+/**/build/fonts/**/
+/**/build/img
+/**/build/css
+/**/build/js/*.js
+snapshots

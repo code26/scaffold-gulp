@@ -61,11 +61,11 @@ function watch() {
 // statics
 gulp.task('statics', function() {
     return gulp.src(['*.html', '*.php'])
-      .pipe(reload({stream: true}));
+        .pipe(reload({stream: true}));
 });
 
 // Run all scripts tasks
-gulp.task('scripts', ['scripts:jquery', 'scripts:head', 'scripts:foot'], function() {
+gulp.task('scripts', ['scripts:jquery','scripts:phaser', 'scripts:head', 'scripts:foot'], function() {
     //
 });
 
@@ -84,6 +84,28 @@ gulp.task('scripts:jquery', function() {
             showFiles: true
         }))
         .pipe($.rename('jquery.min.js'))
+        .pipe($.uglify())
+        .pipe($.size({
+            showFiles: true
+        }))
+        .pipe(gulp.dest(app.js + '/lib'));
+});
+
+// Phaser Bower
+gulp.task('scripts:phaser', function() {
+    return gulp.src($.mainBowerFiles({
+            filter: ['**/'+app.bower+'phaser/**/*']
+        }))
+        .pipe($.plumber(onError))
+        .pipe($.changed(app.js + '/lib'))
+        .pipe($.stripComments({
+            block: true
+        }))
+        .pipe(gulp.dest(app.js + '/lib'))
+        .pipe($.size({
+            showFiles: true
+        }))
+        .pipe($.rename('phaser.min.js'))
         .pipe($.uglify())
         .pipe($.size({
             showFiles: true
@@ -116,7 +138,7 @@ gulp.task('scripts:head', function() {
 gulp.task('scripts:foot', function() {
     var jsFiles = ['js/source/_*.js', '!js/source/head/*'];
     return gulp.src($.mainBowerFiles({
-            filter: ['**/*.js', '!**/'+app.bower+'jquery/**/*']
+            filter: ['**/*.js', '!**/'+app.bower+'jquery/**/*', '!**/'+app.bower+'phaser/**/*']
         }).concat(jsFiles))
         .pipe($.plumber(onError))
         .pipe($.stripComments({
@@ -202,9 +224,16 @@ gulp.task('build', function(callback) {
     return $.runSequence(['statics', 'styles', 'scripts'], 'images',callback);
 });
 
+gulp.task('postDeploy', function(){
+    process.chdir(app.dist);
+    return gulp.src(['*.html', '*.php'])
+    .pipe($.replace('|||VERSION|||', 'v='+Date.now() ))
+    .pipe(gulp.dest('.'))
+});
+
 // Deploy files for production
 gulp.task('deploy', function() {
-    return $.runSequence('prep:safe', 'cleandist', function() {
+    return $.runSequence('prep:safe', 'cleandist', 'postDeploy', function() {
         console.log('\x1b[32m%s\x1b[0m', '✔ Tasks completed. Distribution files at:', app.dist);
     });
 });
