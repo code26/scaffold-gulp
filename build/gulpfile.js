@@ -50,12 +50,19 @@ function makeHashKey(file) {
     return [file.contents.toString('utf8')].join('');
 }
 
-function watch() {
-    gulp.watch(['*.html'], ['statics']);
-    gulp.watch('sass/**/*.scss', ['styles']);
-    gulp.watch('js/source/head/*.js', ['scripts:head', reload]);
-    gulp.watch('js/source/*.js', ['scripts:foot', reload]);
-    gulp.watch(['_raw_img/**/*.jpg','_raw_img/**/*.svg','_raw_img/**/*.png','_raw_img/**/*.gif'], ['images']);
+function watch(live) {
+    if (watch) {
+        gulp.watch('sass/**/*.scss', ['deploy:styles']);
+        gulp.watch('js/source/*.js', ['deploy:scripts', reload]);
+        gulp.watch(['_raw_img/**/*.jpg','_raw_img/**/*.svg','_raw_img/**/*.png','_raw_img/**/*.gif'], ['deploy:images']);
+    } else {
+        gulp.watch(['*.html'], ['statics']);
+        gulp.watch('sass/**/*.scss', ['styles']);
+        gulp.watch('js/source/head/*.js', ['scripts:head', reload]);
+        gulp.watch('js/source/*.js', ['scripts:foot', reload]);
+        gulp.watch(['_raw_img/**/*.jpg','_raw_img/**/*.svg','_raw_img/**/*.png','_raw_img/**/*.gif'], ['images']);
+    }
+
 }
 
 // statics
@@ -65,7 +72,7 @@ gulp.task('statics', function() {
 });
 
 // Run all scripts tasks
-gulp.task('scripts', ['scripts:jquery','scripts:phaser', 'scripts:head', 'scripts:foot'], function() {
+gulp.task('scripts', ['scripts:jquery', 'scripts:head', 'scripts:foot'], function() {
     //
 });
 
@@ -84,28 +91,6 @@ gulp.task('scripts:jquery', function() {
             showFiles: true
         }))
         .pipe($.rename('jquery.min.js'))
-        .pipe($.uglify())
-        .pipe($.size({
-            showFiles: true
-        }))
-        .pipe(gulp.dest(app.js + '/lib'));
-});
-
-// Phaser Bower
-gulp.task('scripts:phaser', function() {
-    return gulp.src($.mainBowerFiles({
-            filter: ['**/'+app.bower+'phaser/**/*']
-        }))
-        .pipe($.plumber(onError))
-        .pipe($.changed(app.js + '/lib'))
-        .pipe($.stripComments({
-            block: true
-        }))
-        .pipe(gulp.dest(app.js + '/lib'))
-        .pipe($.size({
-            showFiles: true
-        }))
-        .pipe($.rename('phaser.min.js'))
         .pipe($.uglify())
         .pipe($.size({
             showFiles: true
@@ -138,7 +123,7 @@ gulp.task('scripts:head', function() {
 gulp.task('scripts:foot', function() {
     var jsFiles = ['js/source/_*.js', '!js/source/head/*'];
     return gulp.src($.mainBowerFiles({
-            filter: ['**/*.js', '!**/'+app.bower+'jquery/**/*', '!**/'+app.bower+'phaser/**/*']
+            filter: ['**/*.js', '!**/'+app.bower+'jquery/**/*']
         }).concat(jsFiles))
         .pipe($.plumber(onError))
         .pipe($.stripComments({
@@ -254,19 +239,19 @@ gulp.task('deploy:statics', ['statics'], function() {
 // Build and deploy styles
 gulp.task('deploy:styles', ['styles'], function() {
     return gulp.src(app.css + '/**')
-        .pipe(gulp.dest(app.dist + app.css));
+        .pipe(gulp.dest(app.dist + '/' + app.css));
 });
 
 // Build and deploy scripts
 gulp.task('deploy:scripts', ['scripts'], function() {
     return gulp.src([app.js + '/**', '!' + app.js + '/source/**'])
-        .pipe(gulp.dest(app.dist + app.js));
+        .pipe(gulp.dest(app.dist + '/' + app.js));
 });
 
 // Build and deploy images
 gulp.task('deploy:images', ['images'], function() {
     return gulp.src(app.img + '/**')
-        .pipe(gulp.dest(app.dist + app.img));
+        .pipe(gulp.dest(app.dist + '/' + app.img));
 });
 
 // build and watch with Browsersync
@@ -281,6 +266,19 @@ gulp.task('watch', ['build'], function() {
     });
 
     watch();
+});
+
+gulp.task('watch:deploy', ['build'], function() {
+    $.browserSync({
+        notify: true,
+        port: app.port,
+        server: true,
+        tunnel: false,
+        xip: false,
+        //online: false,
+    });
+
+    watch(true);
 });
 
 gulp.task('watch:offline', ['build'], function() {
@@ -342,7 +340,6 @@ gulp.task('prep:safe', ['build'], function() {
 gulp.task('default', function() {
     gulp.start('deploy');
 });
-
 
 //SPECIAL TASKS
 // - not included in the default automation
